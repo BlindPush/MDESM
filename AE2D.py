@@ -167,11 +167,11 @@ class Self_Attention(nn.Module):
         super(Self_Attention, self).__init__()
         self.chanel_in = in_dim
         # self.activation = activation
-        ##  下面的query_conv，key_conv，value_conv即对应Wg,Wf,Wh
-        self.query_conv = nn.Conv2d(in_channels=in_dim, out_channels=in_dim // 1, kernel_size=1)  # 即得到C^ X C 8
-        self.key_conv = nn.Conv2d(in_channels=in_dim, out_channels=in_dim // 1, kernel_size=1)  # 即得到C^ X C 8
-        self.value_conv = nn.Conv2d(in_channels=in_dim, out_channels=in_dim, kernel_size=1)  # 即得到C X C
-        self.gamma = nn.Parameter(torch.zeros(1))  # 这里即是计算最终输出的时候的伽马值，初始化为0
+    
+        self.query_conv = nn.Conv2d(in_channels=in_dim, out_channels=in_dim // 1, kernel_size=1)  #
+        self.key_conv = nn.Conv2d(in_channels=in_dim, out_channels=in_dim // 1, kernel_size=1)  #
+        self.value_conv = nn.Conv2d(in_channels=in_dim, out_channels=in_dim, kernel_size=1)  # 
+        self.gamma = nn.Parameter(torch.zeros(1))  
         # self.gamma = 1.
         self.sigmoid = nn.Sigmoid()
 
@@ -184,18 +184,18 @@ class Self_Attention(nn.Module):
 
     def forward(self, x):
         m_batchsize, C, width, height = x.size()
-        #  下面的proj_query，proj_key都是C^ X C X C X N= C^ X N
-        proj_query = self.query_conv(x).view(m_batchsize, -1, width * height).permute(0, 2, 1)  # B X CX(N),permute即为转置
+
+        proj_query = self.query_conv(x).view(m_batchsize, -1, width * height).permute(0, 2, 1)  # 
         proj_key = self.key_conv(x).view(m_batchsize, -1, width * height)  # B X C x (*W*H)
-        energy = torch.bmm(proj_query, proj_key)  # transpose check，进行点乘操作
+        energy = torch.bmm(proj_query, proj_key)  # 
         attention = self.softmax(energy)  # BX (N) X (N)
         proj_value = self.value_conv(x).view(m_batchsize, -1, width * height)  # B X C X N
 
         out = torch.bmm(proj_value, attention.permute(0, 2, 1))
         # =====================
-        # proj_query = self.query_conv(x).view(m_batchsize, -1, width * height)  # B X CX(N),permute即为转置
-        # proj_key = self.key_conv(x).view(m_batchsize, -1, width * height).permute(0, 2, 1)  # B X C x (*W*H)
-        # energy = torch.bmm(proj_query, proj_key) / math.sqrt(64)  # transpose check，进行点乘操作
+        # proj_query = self.query_conv(x).view(m_batchsize, -1, width * height)  # 
+        # proj_key = self.key_conv(x).view(m_batchsize, -1, width * height).permute(0, 2, 1) 
+        # energy = torch.bmm(proj_query, proj_key) / math.sqrt(64)  
         # attention = self.softmax(energy)  # BX (N) X (N)
         # proj_value = self.value_conv(x).view(m_batchsize, -1, width * height)  # B X C X N
         #
@@ -466,7 +466,7 @@ class Classifier(nn.Module):
         x = self.fc(x)
         return x
 
-class Bsaelineae(nn.Module): #============ AUC=
+class Bsaelineae(nn.Module): 
 
     def __init__(self):
         super().__init__()
@@ -484,7 +484,7 @@ class Bsaelineae(nn.Module): #============ AUC=
 
         return clas1, sfs1
 
-class Bsaelineresnet(nn.Module): #============ AUC=
+class Bsaelineresnet(nn.Module): 
 
     def __init__(self):
         super().__init__()
@@ -502,7 +502,7 @@ class Bsaelineresnet(nn.Module): #============ AUC=
 
         return clas1, sfs1
 
-class Bsaelineattention(nn.Module): #============ AUC=
+class Bsaelineattention(nn.Module): 
 
     def __init__(self):
         super().__init__()
@@ -520,8 +520,8 @@ class Bsaelineattention(nn.Module): #============ AUC=
 
         return clas1, sfs1
 
-# 解耦带有域标签
-class Disentae(nn.Module): #============ AUC=
+
+class Disentae(nn.Module): 
 
     def __init__(self, mixstyle_layers=[]):
         super().__init__()
